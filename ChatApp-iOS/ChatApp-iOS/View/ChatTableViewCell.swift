@@ -21,9 +21,12 @@ class ChatTableViewCell: UITableViewCell {
 
     func setupWrapperCellView() {
         wrapperCellView = UIView()
-        wrapperCellView.layer.borderColor = UIColor.gray.cgColor
-        wrapperCellView.layer.borderWidth = 1
         wrapperCellView.layer.cornerRadius = 10
+        wrapperCellView.layer.shadowColor = UIColor.black.cgColor
+        wrapperCellView.layer.shadowOpacity = 0.1
+        wrapperCellView.layer.shadowOffset = CGSize(width: 1, height: 1)
+        wrapperCellView.layer.shadowRadius = 4
+
         wrapperCellView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(wrapperCellView)
     }
@@ -32,7 +35,7 @@ class ChatTableViewCell: UITableViewCell {
         messageTextLabel = UILabel()
         messageTextLabel.translatesAutoresizingMaskIntoConstraints = false
         messageTextLabel.numberOfLines = 0
-        messageTextLabel.font = UIFont(name: "AvenirNext-Medium", size: 16)
+        messageTextLabel.font = UIFont(name: "AvenirNext-Medium", size: 14)
         wrapperCellView.addSubview(messageTextLabel)
     }
 
@@ -54,7 +57,8 @@ class ChatTableViewCell: UITableViewCell {
 
     func configureProperties(isCurrentUser: Bool) {
         if isCurrentUser {
-            wrapperCellView.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.7)
+            wrapperCellView.backgroundColor = UIColor.systemBlue
+                .withAlphaComponent(0.7)
             messageTextLabel.textColor = UIColor.white
         } else {
             wrapperCellView.backgroundColor = UIColor.systemGray5
