@@ -11,9 +11,15 @@ import UIKit
 class ViewController: UIViewController {
 
     let db = Firestore.firestore()
+    var landView = LandingView();
+    
+    override func loadView(){
+        view=landView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title="My Chats"
         // Do any additional setup after loading the view.
         Task {
             //await addUser()
