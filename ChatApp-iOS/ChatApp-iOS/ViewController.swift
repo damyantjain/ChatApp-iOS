@@ -15,10 +15,18 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        Task {
-            //await addUser()
-            await getAllUsers()
-        }
+//        Task {
+//            //await addUser()
+//            await getAllUsers()
+//        }
+        
+        showLoginScreen()
+    }
+    
+    func showLoginScreen() {
+        let loginVC = LoginViewController()
+        loginVC.modalPresentationStyle = .fullScreen
+        present(loginVC, animated: true)
     }
     
     func getAllUsers() async{
