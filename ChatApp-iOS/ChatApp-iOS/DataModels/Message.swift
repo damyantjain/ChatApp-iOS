@@ -7,8 +7,9 @@
 
 import Foundation
 
-struct Chat {
-    var text: String?
-    var time_stamp: Date?
-    var sender_Id: String?
+struct Message {
+    let text: String
+    let senderId: String
+    let timestamp: Date
 }
+

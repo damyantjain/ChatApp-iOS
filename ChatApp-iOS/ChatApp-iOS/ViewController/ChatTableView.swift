@@ -22,9 +22,10 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
                 withIdentifier: "chats", for: indexPath)
             as! ChatTableViewCell
 
-        let chat = messages[indexPath.row]
+        let message = messages[indexPath.row]
         cell.selectionStyle = .none
-        //cell.notesLabel?.text = note.text
+        cell.messageTextLabel?.text = message.text
+        cell.configureProperties(isCurrentUser : message.senderId == loggedInUser)
         return cell
     }
 }

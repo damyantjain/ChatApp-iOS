@@ -14,11 +14,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add, target: self,
+            action: #selector(onAddBarButtonTapped))
         Task {
             //await addUser()
-            await getAllUsers()
+            //await getAllUsers()
         }
+    }
+    
+    
+
+    @objc func onAddBarButtonTapped() {
+        navigationController?.pushViewController(
+            ChatViewController(id: "peter"), animated: true)
     }
     
     func getAllUsers() async{
