@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
 
@@ -41,24 +42,37 @@ class LoginViewController: UIViewController {
     }
     
     @objc func loginButtonTapped() {
-//        if let emailText = loginView.emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-//           let passwordText = loginView.passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) {
-//
-//            if !isValidEmail(emailText) {
-//                showAlert(title: "Invalid Email!", message: "Please enter a valid email address.")
-//                return
-//            }
-//
-//            if passwordText.isEmpty {
-//                showAlert(title: "Password cannot be empty!", message: "Please enter password.")
-//                return
-//            }
+        if let emailText = loginView.emailText.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+           let passwordText = loginView.passwordText.text?.trimmingCharacters(in: .whitespacesAndNewlines) {
             
-     //       setLoading(true)
-        
-        notificationCenter.post(name: .loggedIn, object: nil)
-        dismiss(animated: true)
+            if !isValidEmail(emailText) {
+                showAlert(title: "Invalid Email!", message: "Please enter a valid email address.")
+                return
+            }
             
+            if passwordText.isEmpty {
+                showAlert(title: "Password cannot be empty!", message: "Please enter password.")
+                return
+            }
+            
+            setLoading(true)
+            
+            self.signInToFirebase(email: emailText, password: passwordText)
+        }
+    }
+    
+    func signInToFirebase(email: String, password: String){
+        Auth.auth().signIn(withEmail: email, password: password, completion: {(result, error) in
+            if error == nil{
+                print("login successful")
+                self.setLoading(false)
+                self.notificationCenter.post(name: .loggedIn, object: nil)
+                self.dismiss(animated: true)
+            }else{
+                self.setLoading(false)
+                print("Error occured: \(String(describing: error))")
+            }
+        })
     }
     
     func setLoading(_ loading: Bool) {
@@ -83,7 +97,5 @@ class LoginViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-
-
 
 }
