@@ -28,7 +28,7 @@ class ViewController: UIViewController {
 
     @objc func onAddBarButtonTapped() {
         navigationController?.pushViewController(
-            ChatViewController(id: "peter"), animated: true)
+            ChatViewController(id: "Sarah"), animated: true)
     }
     
     func getAllUsers() async{

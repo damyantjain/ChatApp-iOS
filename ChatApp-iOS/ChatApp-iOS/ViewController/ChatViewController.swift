@@ -12,7 +12,7 @@ class ChatViewController: UIViewController {
 
     let db = Firestore.firestore()
 
-    let loggedInUser = "sarah"
+    let loggedInUser = "peter"
     let chatView = ChatView()
     let id: String
     var messages: [Message] = []
