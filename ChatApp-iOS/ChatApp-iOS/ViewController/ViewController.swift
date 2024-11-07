@@ -38,9 +38,9 @@ class ViewController: UIViewController {
                 for document in snapshot.documents {
                     let data = document.data()
                     if let lastMessage = data["lastMessage"] as? String,
-                       let sender = data["sender"] as? String{
+                       let chatWith = data["chatWith"] as? String{
                        //let timestamp = data["timestamp"] as? Timestamp {
-                       let chat = ChatDetails(lastMessage: lastMessage, sender: sender)
+                       let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith)
                        chats.append(chat)
                         self.landView.allChatsTableView.reloadData()
                     }
@@ -68,8 +68,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "allChats", for: indexPath) as! AllChatsTableView
         cell.selectionStyle = .none
         tableView.separatorStyle = .none
-        print(chats[indexPath.row].sender)
-        cell.senderNameLabel.text = chats[indexPath.row].sender
+        cell.senderNameLabel.text = chats[indexPath.row].chatWith
+        cell.messageTextLabel.text=chats[indexPath.row].lastMessage
 //        let chat = chats[indexPath.row]
 //        
 //        cell.senderNameLabel.text = chat.sender

@@ -9,7 +9,7 @@ import Foundation
 
 struct ChatDetails {
     let lastMessage: String
-    let sender: String
+    let chatWith: String
     //let timestamp: Date
 }
 

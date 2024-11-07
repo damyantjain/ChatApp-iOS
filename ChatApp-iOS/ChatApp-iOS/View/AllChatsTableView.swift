@@ -32,8 +32,8 @@ class AllChatsTableView: UITableViewCell {
     func setupMessageTextLabel() {
         messageTextLabel = UILabel()
         messageTextLabel.numberOfLines = 1
-        messageTextLabel.font = UIFont.systemFont(ofSize: 14)
-        messageTextLabel.textColor = .darkGray
+        messageTextLabel.font = UIFont.systemFont(ofSize: 12)
+        messageTextLabel.textColor = .darkText
         messageTextLabel.translatesAutoresizingMaskIntoConstraints = false
         wrapperCellView.addSubview(messageTextLabel)
     }
@@ -63,12 +63,17 @@ class AllChatsTableView: UITableViewCell {
             wrapperCellView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
             wrapperCellView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -4),
                                        
-            senderNameLabel.topAnchor.constraint(equalTo: wrapperCellView.topAnchor, constant: 8),
+            senderNameLabel.topAnchor.constraint(equalTo: wrapperCellView.topAnchor, constant: 6),
             senderNameLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
             senderNameLabel.heightAnchor.constraint(equalToConstant: 20),
             senderNameLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
+            
+            messageTextLabel.topAnchor.constraint(equalTo: senderNameLabel.topAnchor, constant: 18),
+            messageTextLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
+            messageTextLabel.heightAnchor.constraint(equalToConstant: 20),
+            messageTextLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
                                        
-             wrapperCellView.heightAnchor.constraint(equalToConstant: 36)
+            wrapperCellView.heightAnchor.constraint(equalToConstant: 50)
             
         ])
     }
