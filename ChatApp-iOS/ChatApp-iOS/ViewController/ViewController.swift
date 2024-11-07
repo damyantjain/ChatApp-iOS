@@ -68,9 +68,11 @@ class ViewController: UIViewController {
                 {
                     let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith, timestamp: timestamp.dateValue())
                     chats.append(chat)
+                    chats.sort { $0.timestamp > $1.timestamp }
                     self.landView.allChatsTableView.reloadData()
                 }
             }
+           
             
             
             
