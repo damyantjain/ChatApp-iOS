@@ -12,4 +12,4 @@ struct Message {
     let senderId: String
     let timestamp: Date
     let senderName: String
-}	
+}
