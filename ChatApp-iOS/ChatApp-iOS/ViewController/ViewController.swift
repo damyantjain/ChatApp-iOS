@@ -22,6 +22,29 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title="My Chats"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+                                    barButtonSystemItem: .add, target: self,
+                                    action: #selector(onAddBarButtonTapped)
+                                )
+       
+                    
+                    let logoutAction = UIAction(title: "Logout") { _ in
+                        self.logout()
+                    }
+                    
+                    let menu = UIMenu(title: "Select type", children: [logoutAction])
+                    
+                    // Set the left bar button with a person icon and attach the menu
+                    let userMenu = UIBarButtonItem(
+                        image: UIImage(systemName: "person.circle"),
+                        style: .plain,
+                        target: nil,
+                        action: nil
+                    )
+                    userMenu.tintColor = .black
+                    navigationItem.leftBarButtonItem = userMenu
+                    
+                    navigationItem.leftBarButtonItem?.menu = menu
         landView.allChatsTableView.delegate = self
         landView.allChatsTableView.dataSource = self
         landView.allChatsTableView.separatorStyle = .none
@@ -32,6 +55,8 @@ class ViewController: UIViewController {
         
         
         
+       
+        
         func getAllChats() async{
             do {
                 let snapshot = try await db.collection("users").document("Bi3jIBWkqcdXeQ2xjykg").collection("chats").getDocuments()
@@ -39,7 +64,7 @@ class ViewController: UIViewController {
                     let data = document.data()
                     if let lastMessage = data["lastMessage"] as? String,
                        let chatWith = data["chatWith"] as? String,
-                       let timestamp = data["timestamp"] as? Timestamp 
+                       let timestamp = data["timestamp"] as? Timestamp
                     {
                         let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith, timestamp: timestamp.dateValue())
                        chats.append(chat)
@@ -55,6 +80,16 @@ class ViewController: UIViewController {
         }
         
     }
+    @objc func onAddBarButtonTapped(){
+               
+                   
+               }
+    
+    func logout() {
+//                UserDefaults.standard.removeObject(forKey: "apiKey")
+//                let login = ViewController()
+//                navigationController?.setViewControllers([login], animated: true)
+        }
 }
 
 
