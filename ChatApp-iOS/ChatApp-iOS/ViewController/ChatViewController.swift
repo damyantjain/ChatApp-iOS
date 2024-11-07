@@ -5,22 +5,22 @@
 //  Created by Damyant Jain on 11/6/24.
 //
 
+import CryptoKit
 import FirebaseFirestore
 import UIKit
 
 class ChatViewController: UIViewController {
 
     let db = Firestore.firestore()
-
-    let loggedInUser = "Peter"
+    let loggedInUser = User(email: "peter@mail.com", name: "Peter")
     let chatView = ChatView()
-    let id: String
+    let contact: User
     var chatId: String?
     var messages: [Message] = []
     var messageListener: ListenerRegistration?
 
-    init(id: String) {
-        self.id = id
+    init(contact: User) {
+        self.contact = contact
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -40,7 +40,7 @@ class ChatViewController: UIViewController {
             self, action: #selector(sendMessage), for: .touchUpInside)
 
         chatView.chatTableView.separatorStyle = .none
-        title = id
+        title = contact.name
         chatId = formChatId()
 
         chatView.chatTableView.delegate = self
@@ -64,7 +64,7 @@ class ChatViewController: UIViewController {
                     "messages"
                 ).addDocument(data: [
                     "text": text,
-                    "sender_Id": loggedInUser,
+                    "sender_Id": loggedInUser.email,
                     "time_stamp": Timestamp(date: Date()),
                 ])
                 chatView.chatTextField.text = ""
@@ -116,10 +116,10 @@ class ChatViewController: UIViewController {
     }
 
     func getSenderName(_ senderId: String) -> String {
-        if senderId == loggedInUser.lowercased() {
-            return loggedInUser
+        if senderId.lowercased() == loggedInUser.email.lowercased() {
+            return loggedInUser.name
         } else {
-            return id
+            return contact.name
         }
     }
 
@@ -133,11 +133,18 @@ class ChatViewController: UIViewController {
     }
 
     func formChatId() -> String {
-        let loggedInUserId = loggedInUser.lowercased()
-        let otherUserId = id.lowercased()
-        return loggedInUserId < otherUserId
-            ? "\(loggedInUserId)_\(otherUserId)"
-            : "\(otherUserId)_\(loggedInUserId)"
+        let loggedInUserId = loggedInUser.email.lowercased()
+        let otherUserId = contact.email.lowercased()
+        let combinedId =
+            loggedInUserId < otherUserId
+            ? "\(loggedInUserId)\(otherUserId)"
+            : "\(otherUserId)\(loggedInUserId)"
+        let data = Data(combinedId.utf8)
+        let hashed = SHA256.hash(data: data)
+        let hashString = hashed.compactMap { String(format: "%02x", $0) }
+            .joined()
+
+        return hashString
     }
 
     override func viewWillDisappear(_ animated: Bool) {

@@ -31,7 +31,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
         cell.dateTimeLabel?.text = dateFormatter.string(from: message.timestamp)
         cell.configureProperties(
             isCurrentUser: message.senderId.lowercased()
-                == loggedInUser.lowercased())
+                == loggedInUser.email.lowercased())
         return cell
     }
 }
