@@ -26,7 +26,12 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         cell.messageTextLabel?.text = message.text
         cell.nameLabel?.text = message.senderName
-        cell.configureProperties(isCurrentUser : message.senderId.lowercased() == loggedInUser.lowercased())
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, HH:mm"
+        cell.dateTimeLabel?.text = dateFormatter.string(from: message.timestamp)
+        cell.configureProperties(
+            isCurrentUser: message.senderId.lowercased()
+                == loggedInUser.lowercased())
         return cell
     }
 }

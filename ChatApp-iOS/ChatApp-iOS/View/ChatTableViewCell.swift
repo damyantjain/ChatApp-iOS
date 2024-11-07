@@ -12,12 +12,14 @@ class ChatTableViewCell: UITableViewCell {
     var wrapperCellView: UIView!
     var nameLabel: UILabel!
     var messageTextLabel: UILabel!
+    var dateTimeLabel: UILabel!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupWrapperCellView()
         setUpNameLabel()
         setUpTextLabel()
+        setUpDateTimeLabel()
         initConstraints()
     }
 
@@ -48,6 +50,13 @@ class ChatTableViewCell: UITableViewCell {
         wrapperCellView.addSubview(messageTextLabel)
     }
 
+    func setUpDateTimeLabel() {
+        dateTimeLabel = UILabel()
+        dateTimeLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateTimeLabel.font = UIFont(name: "AvenirNext-Italic", size: 10)
+        wrapperCellView.addSubview(dateTimeLabel)
+    }
+
     func configureConstraints(isCurrentUser: Bool) {
         if isCurrentUser {
             NSLayoutConstraint.activate([
@@ -67,9 +76,11 @@ class ChatTableViewCell: UITableViewCell {
     func configureProperties(isCurrentUser: Bool) {
         if isCurrentUser {
             // Sent messages (Current user)
-            wrapperCellView.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.8)
+            wrapperCellView.backgroundColor = UIColor.systemBlue
+                .withAlphaComponent(0.8)
             messageTextLabel.textColor = UIColor.white
             nameLabel.textColor = UIColor.white.withAlphaComponent(0.8)
+            dateTimeLabel.textColor = UIColor.white.withAlphaComponent(0.9)
         } else {
             // Received messages (Other user)
             wrapperCellView.backgroundColor = UIColor.systemGray5
@@ -100,12 +111,17 @@ class ChatTableViewCell: UITableViewCell {
 
             messageTextLabel.topAnchor.constraint(
                 equalTo: nameLabel.bottomAnchor, constant: 4),
-            messageTextLabel.bottomAnchor.constraint(
-                equalTo: wrapperCellView.bottomAnchor, constant: -6),
             messageTextLabel.leadingAnchor.constraint(
                 equalTo: wrapperCellView.leadingAnchor, constant: 12),
             messageTextLabel.trailingAnchor.constraint(
                 equalTo: wrapperCellView.trailingAnchor, constant: -12),
+
+            dateTimeLabel.topAnchor.constraint(
+                equalTo: messageTextLabel.bottomAnchor, constant: 4),
+            dateTimeLabel.trailingAnchor.constraint(
+                equalTo: wrapperCellView.trailingAnchor, constant: -12),
+            dateTimeLabel.bottomAnchor.constraint(
+                equalTo: wrapperCellView.bottomAnchor, constant: -6),
         ])
     }
 
