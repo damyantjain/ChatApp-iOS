@@ -38,9 +38,10 @@ class ViewController: UIViewController {
                 for document in snapshot.documents {
                     let data = document.data()
                     if let lastMessage = data["lastMessage"] as? String,
-                       let chatWith = data["chatWith"] as? String{
-                       //let timestamp = data["timestamp"] as? Timestamp {
-                       let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith)
+                       let chatWith = data["chatWith"] as? String,
+                       let timestamp = data["timestamp"] as? Timestamp 
+                    {
+                        let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith, timestamp: timestamp.dateValue())
                        chats.append(chat)
                         self.landView.allChatsTableView.reloadData()
                     }
@@ -70,10 +71,13 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.separatorStyle = .none
         cell.senderNameLabel.text = chats[indexPath.row].chatWith
         cell.messageTextLabel.text=chats[indexPath.row].lastMessage
-//        let chat = chats[indexPath.row]
-//        
-//        cell.senderNameLabel.text = chat.sender
-        //cell.messageTextLabel.text = chat.lastMessage // if you want to display the last message as well
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM d, HH:mm"
+        cell.timestampLabel.text = dateFormatter.string(from: chats[indexPath.row].timestamp)
+        
+//      let chat = chats[indexPath.row]
+//      cell.senderNameLabel.text = chat.sender
+//      cell.messageTextLabel.text = chat.lastMessage // if you want to display the last message as well
         return cell
     }
 

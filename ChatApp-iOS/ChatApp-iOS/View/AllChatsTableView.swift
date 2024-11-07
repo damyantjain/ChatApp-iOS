@@ -72,6 +72,11 @@ class AllChatsTableView: UITableViewCell {
             messageTextLabel.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 10),
             messageTextLabel.heightAnchor.constraint(equalToConstant: 20),
             messageTextLabel.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
+            
+            timestampLabel.topAnchor.constraint(equalTo: senderNameLabel.topAnchor, constant: 18),
+            timestampLabel.trailingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -10),
+            timestampLabel.heightAnchor.constraint(equalToConstant: 20),
+            timestampLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 80),
                                        
             wrapperCellView.heightAnchor.constraint(equalToConstant: 50)
             
