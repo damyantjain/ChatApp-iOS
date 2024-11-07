@@ -7,12 +7,16 @@
 
 import FirebaseFirestore
 import UIKit
+import FirebaseAuth
 
 class ViewController: UIViewController {
     
     let db = Firestore.firestore()
     var landView = LandingView();
-    let loggedInUser = "peter"
+    let loggedInUser = User(
+            email: "peter@mail.com", name: "Peter",
+            documentID: "Bi3jIBWkqcdXeQ2xjykg")
+    
     var chats = [ChatDetails]()
     
     override func loadView(){
@@ -23,73 +27,76 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         title="My Chats"
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-                                    barButtonSystemItem: .add, target: self,
-                                    action: #selector(onAddBarButtonTapped)
-                                )
-       
-                    
-                    let logoutAction = UIAction(title: "Logout") { _ in
-                        self.logout()
-                    }
-                    
-                    let menu = UIMenu(title: "Select type", children: [logoutAction])
-                    
-                    // Set the left bar button with a person icon and attach the menu
-                    let userMenu = UIBarButtonItem(
-                        image: UIImage(systemName: "person.circle"),
-                        style: .plain,
-                        target: nil,
-                        action: nil
-                    )
-                    userMenu.tintColor = .black
-                    navigationItem.leftBarButtonItem = userMenu
-                    
-                    navigationItem.leftBarButtonItem?.menu = menu
+            barButtonSystemItem: .add, target: self,
+            action: #selector(onAddBarButtonTapped)
+        )
+        
+        
+        let logoutAction = UIAction(title: "Logout") { _ in
+            self.logout()
+        }
+        
+        let menu = UIMenu(title: "Select type", children: [logoutAction])
+        
+        let userMenu = UIBarButtonItem(
+            image: UIImage(systemName: "person.circle"),
+            style: .plain,
+            target: nil,
+            action: nil
+        )
+        userMenu.tintColor = .black
+        navigationItem.leftBarButtonItem = userMenu
+        
+        navigationItem.leftBarButtonItem?.menu = menu
         landView.allChatsTableView.delegate = self
         landView.allChatsTableView.dataSource = self
         landView.allChatsTableView.separatorStyle = .none
         Task {
             await getAllChats()
         }
-        
-        
-        
-        
-       
-        
-        func getAllChats() async{
-            do {
-                let snapshot = try await db.collection("users").document("Bi3jIBWkqcdXeQ2xjykg").collection("chats").getDocuments()
-                for document in snapshot.documents {
-                    let data = document.data()
-                    if let lastMessage = data["lastMessage"] as? String,
-                       let chatWith = data["chatWith"] as? String,
-                       let timestamp = data["timestamp"] as? Timestamp
-                    {
-                        let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith, timestamp: timestamp.dateValue())
-                       chats.append(chat)
-                        self.landView.allChatsTableView.reloadData()
-                    }
+    }
+    
+    
+    func getAllChats() async{
+        do {
+            let snapshot = try await db.collection("users").document(loggedInUser.documentID).collection("chats").getDocuments()
+            for document in snapshot.documents {
+                let data = document.data()
+                if let lastMessage = data["lastMessage"] as? String,
+                   let chatWith = data["chatWith"] as? String,
+                   let timestamp = data["timestamp"] as? Timestamp
+                {
+                    let chat = ChatDetails(lastMessage: lastMessage, chatWith: chatWith, timestamp: timestamp.dateValue())
+                    chats.append(chat)
+                    self.landView.allChatsTableView.reloadData()
                 }
-                
-                
-                
-            } catch {
-                print("Error getting documents: \(error)")
             }
+            
+            
+            
+        } catch {
+            print("Error getting documents: \(error)")
         }
-        
     }
     @objc func onAddBarButtonTapped(){
-               
-                   
-               }
-    
-    func logout() {
-//                UserDefaults.standard.removeObject(forKey: "apiKey")
-//                let login = ViewController()
-//                navigationController?.setViewControllers([login], animated: true)
-        }
+        
+        
+    }
+    func logout(){
+        let logoutAlert = UIAlertController(title: "Logging out!", message: "Are you sure want to log out?",
+                                            preferredStyle: .actionSheet)
+        logoutAlert.addAction(UIAlertAction(title: "Yes, log out!", style: .default, handler: {(_) in
+            do{
+                try Auth.auth().signOut()
+            }catch{
+                print("Error occured!")
+            }
+        })
+        )
+        logoutAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        self.present(logoutAlert, animated: true)
+    }
 }
 
 
