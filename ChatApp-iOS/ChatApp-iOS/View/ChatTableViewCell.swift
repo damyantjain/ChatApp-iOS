@@ -98,6 +98,9 @@ class ChatTableViewCell: UITableViewCell {
                 equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -5
             ),
             wrapperCellView.widthAnchor.constraint(
+                greaterThanOrEqualToConstant: 90
+            ),
+            wrapperCellView.widthAnchor.constraint(
                 lessThanOrEqualTo: self.safeAreaLayoutGuide.widthAnchor,
                 multiplier: 0.8
             ),
