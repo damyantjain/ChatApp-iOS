@@ -14,32 +14,21 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add, target: self,
-            action: #selector(onAddBarButtonTapped))
+        // Do any additional setup after loading the view.
         Task {
             //await addUser()
-            //await getAllUsers()
+            await getAllUsers()
         }
     }
-
-    @objc func onAddBarButtonTapped() {
-        var contact = User(
-            email: "sarah@mail.com", name: "Sarah",
-            documentID: "Z5omu7rwA4SfqFEoNF3W")
-        navigationController?.pushViewController(
-            ChatViewController(contact: contact), animated: true)
-    }
-
-    func getAllUsers() async {
+    
+    func getAllUsers() async{
         do {
-            let snapshot = try await db.collection("users").getDocuments()
-            for document in snapshot.documents {
-                print("\(document.documentID) => \(document.data())")
-            }
+          let snapshot = try await db.collection("users").getDocuments()
+          for document in snapshot.documents {
+            print("\(document.documentID) => \(document.data())")
+          }
         } catch {
-            print("Error getting documents: \(error)")
+          print("Error getting documents: \(error)")
         }
     }
 
