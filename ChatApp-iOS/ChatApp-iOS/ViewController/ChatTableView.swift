@@ -25,7 +25,8 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
         let message = messages[indexPath.row]
         cell.selectionStyle = .none
         cell.messageTextLabel?.text = message.text
-        cell.configureProperties(isCurrentUser : message.senderId == loggedInUser)
+        cell.nameLabel?.text = message.senderName
+        cell.configureProperties(isCurrentUser : message.senderId.lowercased() == loggedInUser.lowercased())
         return cell
     }
 }

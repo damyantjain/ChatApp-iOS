@@ -12,7 +12,7 @@ class ChatViewController: UIViewController {
 
     let db = Firestore.firestore()
 
-    let loggedInUser = "peter"
+    let loggedInUser = "Peter"
     let chatView = ChatView()
     let id: String
     var chatId: String?
@@ -97,9 +97,11 @@ class ChatViewController: UIViewController {
                         let senderId = data["sender_Id"] as? String,
                         let timestamp = data["time_stamp"] as? Timestamp
                     {
+                        let senderName = getSenderName(senderId)
                         let newMessage = Message(
                             text: text, senderId: senderId,
-                            timestamp: timestamp.dateValue())
+                            timestamp: timestamp.dateValue(),
+                            senderName: senderName)
                         self.messages.append(newMessage)
                         let newIndexPath = IndexPath(
                             row: self.messages.count - 1, section: 0)
@@ -110,6 +112,14 @@ class ChatViewController: UIViewController {
                     }
                 }
             }
+        }
+    }
+
+    func getSenderName(_ senderId: String) -> String {
+        if senderId == loggedInUser.lowercased() {
+            return loggedInUser
+        } else {
+            return id
         }
     }
 

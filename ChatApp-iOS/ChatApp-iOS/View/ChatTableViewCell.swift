@@ -10,11 +10,13 @@ import UIKit
 class ChatTableViewCell: UITableViewCell {
 
     var wrapperCellView: UIView!
+    var nameLabel: UILabel!
     var messageTextLabel: UILabel!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupWrapperCellView()
+        setUpNameLabel()
         setUpTextLabel()
         initConstraints()
     }
@@ -29,6 +31,13 @@ class ChatTableViewCell: UITableViewCell {
 
         wrapperCellView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(wrapperCellView)
+    }
+
+    func setUpNameLabel() {
+        nameLabel = UILabel()
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        nameLabel.font = UIFont(name: "AvenirNext-Medium", size: 14)
+        wrapperCellView.addSubview(nameLabel)
     }
 
     func setUpTextLabel() {
@@ -57,12 +66,15 @@ class ChatTableViewCell: UITableViewCell {
 
     func configureProperties(isCurrentUser: Bool) {
         if isCurrentUser {
-            wrapperCellView.backgroundColor = UIColor.systemBlue
-                .withAlphaComponent(0.7)
+            // Sent messages (Current user)
+            wrapperCellView.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.8)
             messageTextLabel.textColor = UIColor.white
+            nameLabel.textColor = UIColor.white.withAlphaComponent(0.8)
         } else {
+            // Received messages (Other user)
             wrapperCellView.backgroundColor = UIColor.systemGray5
             messageTextLabel.textColor = UIColor.black
+            nameLabel.textColor = UIColor.red.withAlphaComponent(0.8)
         }
         configureConstraints(isCurrentUser: isCurrentUser)
     }
@@ -79,8 +91,15 @@ class ChatTableViewCell: UITableViewCell {
                 multiplier: 0.8
             ),
 
-            messageTextLabel.topAnchor.constraint(
+            nameLabel.topAnchor.constraint(
                 equalTo: wrapperCellView.topAnchor, constant: 6),
+            nameLabel.leadingAnchor.constraint(
+                equalTo: wrapperCellView.leadingAnchor, constant: 12),
+            nameLabel.trailingAnchor.constraint(
+                equalTo: wrapperCellView.trailingAnchor, constant: -12),
+
+            messageTextLabel.topAnchor.constraint(
+                equalTo: nameLabel.bottomAnchor, constant: 4),
             messageTextLabel.bottomAnchor.constraint(
                 equalTo: wrapperCellView.bottomAnchor, constant: -6),
             messageTextLabel.leadingAnchor.constraint(
