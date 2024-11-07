@@ -25,7 +25,9 @@ class ViewController: UIViewController {
     }
 
     @objc func onAddBarButtonTapped() {
-        var contact = User(email: "sarah@mail.com", name: "Sarah")
+        var contact = User(
+            email: "sarah@mail.com", name: "Sarah",
+            documentID: "Z5omu7rwA4SfqFEoNF3W")
         navigationController?.pushViewController(
             ChatViewController(contact: contact), animated: true)
     }

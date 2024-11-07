@@ -12,7 +12,9 @@ import UIKit
 class ChatViewController: UIViewController {
 
     let db = Firestore.firestore()
-    let loggedInUser = User(email: "peter@mail.com", name: "Peter")
+    let loggedInUser = User(
+        email: "peter@mail.com", name: "Peter",
+        documentID: "Bi3jIBWkqcdXeQ2xjykg")
     let chatView = ChatView()
     let contact: User
     var chatId: String?
@@ -60,13 +62,35 @@ class ChatViewController: UIViewController {
     func sendMessageAsync() async {
         do {
             if let text = chatView.chatTextField.text, !text.isEmpty {
-                try await db.collection("chats").document(chatId!).collection(
-                    "messages"
-                ).addDocument(data: [
+                let timeStamp = Timestamp(date: Date())
+                async let userChatUpdate: Void = db.collection("users").document(
+                    loggedInUser.documentID
+                ).collection("chats").document(chatId!).setData(
+                    [
+                        "sender_id": loggedInUser.email,
+                        "chatWith": contact.name,
+                        "lastMessage": text,
+                        "timestamp": timeStamp,
+                    ], merge: true)
+
+                async let contactChatUpdate: Void = db.collection("users").document(
+                    contact.documentID
+                ).collection("chats").document(chatId!).setData(
+                    [
+                        "sender_id": loggedInUser.email,
+                        "chatWith": loggedInUser.name,
+                        "lastMessage": text,
+                        "timestamp": timeStamp,
+                    ], merge: true)
+
+                async let messageAddition = db.collection("chats").document(
+                    chatId!
+                ).collection("messages").addDocument(data: [
                     "text": text,
                     "sender_Id": loggedInUser.email,
-                    "time_stamp": Timestamp(date: Date()),
+                    "time_stamp": timeStamp,
                 ])
+                _ = try await (userChatUpdate, contactChatUpdate, messageAddition)
                 chatView.chatTextField.text = ""
             }
         } catch {
