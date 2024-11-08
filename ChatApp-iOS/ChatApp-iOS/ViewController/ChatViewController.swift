@@ -12,17 +12,16 @@ import UIKit
 class ChatViewController: UIViewController {
 
     let db = Firestore.firestore()
-    let loggedInUser = User(
-        email: "peter@mail.com", name: "Peter",
-        documentID: "Bi3jIBWkqcdXeQ2xjykg")
+    let loggedInUser: User
     let chatView = ChatView()
     let contact: User
     var chatId: String?
     var messages: [Message] = []
     var messageListener: ListenerRegistration?
 
-    init(contact: User) {
+    init(contact: User, loggedInUser: User) {
         self.contact = contact
+        self.loggedInUser = loggedInUser
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -63,25 +62,27 @@ class ChatViewController: UIViewController {
         do {
             if let text = chatView.chatTextField.text, !text.isEmpty {
                 let timeStamp = Timestamp(date: Date())
-                async let userChatUpdate: Void = db.collection("users").document(
-                    loggedInUser.documentID
-                ).collection("chats").document(chatId!).setData(
-                    [
-                        "sender_id": loggedInUser.email,
-                        "chatWith": contact.name,
-                        "lastMessage": text,
-                        "timestamp": timeStamp,
-                    ], merge: true)
+                async let userChatUpdate: Void = db.collection("users")
+                    .document(
+                        loggedInUser.email
+                    ).collection("chats").document(chatId!).setData(
+                        [
+                            "sender_id": loggedInUser.email,
+                            "chatWith": contact.name,
+                            "lastMessage": text,
+                            "timestamp": timeStamp,
+                        ], merge: true)
 
-                async let contactChatUpdate: Void = db.collection("users").document(
-                    contact.documentID
-                ).collection("chats").document(chatId!).setData(
-                    [
-                        "sender_id": loggedInUser.email,
-                        "chatWith": loggedInUser.name,
-                        "lastMessage": text,
-                        "timestamp": timeStamp,
-                    ], merge: true)
+                async let contactChatUpdate: Void = db.collection("users")
+                    .document(
+                        contact.email
+                    ).collection("chats").document(chatId!).setData(
+                        [
+                            "sender_id": loggedInUser.email,
+                            "chatWith": loggedInUser.name,
+                            "lastMessage": text,
+                            "timestamp": timeStamp,
+                        ], merge: true)
 
                 async let messageAddition = db.collection("chats").document(
                     chatId!
@@ -90,7 +91,9 @@ class ChatViewController: UIViewController {
                     "sender_Id": loggedInUser.email,
                     "time_stamp": timeStamp,
                 ])
-                _ = try await (userChatUpdate, contactChatUpdate, messageAddition)
+                _ = try await (
+                    userChatUpdate, contactChatUpdate, messageAddition
+                )
                 chatView.chatTextField.text = ""
             }
         } catch {

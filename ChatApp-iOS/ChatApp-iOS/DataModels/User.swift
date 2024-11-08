@@ -8,5 +8,4 @@
 struct User {
     let email: String
     let name: String
-    let documentID: String
 }
