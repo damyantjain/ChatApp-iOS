@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     
     let db = Firestore.firestore()
     var landView = LandingView();
-    var loggedInUser = User(email: "", name: "", documentID: "")
+    var loggedInUser = User(email: "", name: "")
     
     var chats = [ChatDetails]()
     
@@ -125,7 +125,7 @@ class ViewController: UIViewController {
     
     func loadChatsForLoggedInUser() {
         if let user = Auth.auth().currentUser, let email = user.email, !email.isEmpty {
-            loggedInUser = User(email: email, name: user.displayName ?? "Unknown", documentID: email)
+            loggedInUser = User(email: email, name: user.displayName ?? "Unknown")
             Task {
                 await getAllChats()
             }
