@@ -70,8 +70,6 @@ class RegisterViewController: UIViewController {
             setLoading(true)
             
             registerNewAccount()
-            
-            
         }
     }
     

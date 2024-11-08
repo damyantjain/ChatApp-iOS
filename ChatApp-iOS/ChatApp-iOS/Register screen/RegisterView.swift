@@ -11,7 +11,6 @@ class RegisterView: UIView {
 
     var scrollView: UIScrollView!
     var contentWrapper: UIView!
-    var logoImageView: UIImageView!
     var titleLabel: UILabel!
     var nameText: UITextField!
     var emailText: UITextField!
@@ -28,7 +27,6 @@ class RegisterView: UIView {
         
         setupScrollView()
         setupContentWrapper()
-     //   setupLogoImageView()
         setUpTitleLabel()
         setUpNameTextField()
         setUpEmailTextField()
@@ -56,13 +54,6 @@ class RegisterView: UIView {
         contentWrapper = UIView()
         contentWrapper.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentWrapper)
-    }
-    
-    func setupLogoImageView() {
-        logoImageView = UIImageView(image: UIImage(named: "LogoImage"))
-        logoImageView.contentMode = .scaleAspectFit
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        contentWrapper.addSubview(logoImageView)
     }
     
     func setUpTitleLabel() {
@@ -150,12 +141,6 @@ class RegisterView: UIView {
             contentWrapper.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentWrapper.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentWrapper.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-            
-//            logoImageView.topAnchor.constraint(equalTo: contentWrapper.topAnchor, constant: 20),
-//          //  logoImageView.trailingAnchor.constraint(equalTo: contentWrapper.trailingAnchor, constant: -20),
-//            logoImageView.centerXAnchor.constraint(equalTo: contentWrapper.centerXAnchor),
-//            logoImageView.widthAnchor.constraint(equalToConstant: 100),
-//            logoImageView.heightAnchor.constraint(equalToConstant: 100),
                     
             titleLabel.topAnchor.constraint(equalTo: contentWrapper.topAnchor, constant: 60),
             titleLabel.leadingAnchor.constraint(equalTo: contentWrapper.leadingAnchor, constant: 20),
@@ -190,7 +175,7 @@ class RegisterView: UIView {
             loginButton.bottomAnchor.constraint(equalTo: contentWrapper.bottomAnchor, constant: -20),
                     
             activityIndicator.centerXAnchor.constraint(equalTo: registerButton.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: registerButton.centerYAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: registerButton.centerYAnchor, constant: 50),
             
         ])
     }

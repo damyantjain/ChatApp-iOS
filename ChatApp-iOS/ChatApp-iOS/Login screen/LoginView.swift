@@ -26,7 +26,6 @@ class LoginView: UIView {
         
         setupScrollView()
         setupContentWrapper()
-    //    setupLogoImageView()
         setUpTitleLabel()
         setUpEmailTextField()
         setUpPasswordTextField()
@@ -127,12 +126,6 @@ class LoginView: UIView {
             contentWrapper.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentWrapper.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-//            logoImageView.topAnchor.constraint(equalTo: contentWrapper.topAnchor, constant: 20),
-//          //  logoImageView.trailingAnchor.constraint(equalTo: contentWrapper.trailingAnchor, constant: -20),
-//            logoImageView.centerXAnchor.constraint(equalTo: contentWrapper.centerXAnchor),
-//            logoImageView.widthAnchor.constraint(equalToConstant: 100),
-//            logoImageView.heightAnchor.constraint(equalToConstant: 100),
-            
             titleLabel.topAnchor.constraint(equalTo: contentWrapper.topAnchor, constant: 60),
             titleLabel.leadingAnchor.constraint(equalTo: contentWrapper.leadingAnchor, constant: 20),
             
@@ -156,7 +149,7 @@ class LoginView: UIView {
             registerButton.bottomAnchor.constraint(equalTo: contentWrapper.bottomAnchor, constant: -20),
             
             activityIndicator.centerXAnchor.constraint(equalTo: loginButton.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor, constant: 50),
             
             
         ])

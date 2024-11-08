@@ -71,6 +71,7 @@ class LoginViewController: UIViewController {
             }else{
                 self.setLoading(false)
                 print("Error occured: \(String(describing: error))")
+                self.showAlert(title: "Error!", message: "Incorrect credentials")
             }
         })
     }
