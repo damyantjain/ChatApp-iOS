@@ -11,6 +11,7 @@ class RegisterViewController: UIViewController {
 
     let registerView = RegisterView()
     let notificationCenter = NotificationCenter.default
+    var onRegistrationSuccess: (() -> Void)?
     
     override func loadView() {
         view = registerView

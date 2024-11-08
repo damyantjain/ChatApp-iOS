@@ -31,6 +31,7 @@ extension RegisterViewController{
                                 self.setNameOfTheUserInFirebaseAuth(name: name)
                                 self.saveUserToFirestore(name: name, email: email)
                                 self.notificationCenter.post(name: .registered, object: nil)
+                                self.onRegistrationSuccess?()
                                 print("registered successfully")
                             } else{
                                 //MARK: there is a error creating the user...

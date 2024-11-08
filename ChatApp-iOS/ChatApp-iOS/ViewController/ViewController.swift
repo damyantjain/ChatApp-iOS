@@ -13,9 +13,7 @@ class ViewController: UIViewController {
     
     let db = Firestore.firestore()
     var landView = LandingView();
-    let loggedInUser = User(
-            email: "peter@mail.com", name: "Peter",
-            documentID: "Bi3jIBWkqcdXeQ2xjykg")
+    var loggedInUser = User(email: "", name: "", documentID: "")
     
     var chats = [ChatDetails]()
     
@@ -26,6 +24,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title="My Chats"
+        
+        // Check if user is logged in
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            if user != nil {
+                self?.loadChatsForLoggedInUser()  // User is logged in, so proceed
+            } else {
+                self?.showLoginScreen()  // No user, show login screen
+            }
+        }
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add, target: self,
             action: #selector(onAddBarButtonTapped)
@@ -51,15 +59,16 @@ class ViewController: UIViewController {
         landView.allChatsTableView.delegate = self
         landView.allChatsTableView.dataSource = self
         landView.allChatsTableView.separatorStyle = .none
-        Task {
-            await getAllChats()
-        }
+//        Task {
+//            await getAllChats()
+//        }
     }
     
     
     func getAllChats() async{
         do {
-            let snapshot = try await db.collection("users").document(loggedInUser.documentID).collection("chats").getDocuments()
+            print("current logged in user:", loggedInUser.email)
+            let snapshot = try await db.collection("users").document(loggedInUser.email).collection("chats").getDocuments()
             for document in snapshot.documents {
                 let data = document.data()
                 if let lastMessage = data["lastMessage"] as? String,
@@ -103,7 +112,27 @@ class ViewController: UIViewController {
     func showLoginScreen() {
         let loginVC = LoginViewController()
         loginVC.modalPresentationStyle = .fullScreen
+        
+        // Set a callback to handle user login
+        loginVC.onLoginSuccess = { [weak self] in
+            self?.dismiss(animated: true) {
+                self?.loadChatsForLoggedInUser()
+            }
+        }
+        
         present(loginVC, animated: true)
+    }
+    
+    func loadChatsForLoggedInUser() {
+        if let user = Auth.auth().currentUser, let email = user.email, !email.isEmpty {
+            loggedInUser = User(email: email, name: user.displayName ?? "Unknown", documentID: email)
+            Task {
+                await getAllChats()
+            }
+        } else {
+            print("Error: Logged in user email is empty.")
+            showLoginScreen()
+        }
     }
 }
 

@@ -12,6 +12,7 @@ class LoginViewController: UIViewController {
 
     let loginView = LoginView()
     let notificationCenter = NotificationCenter.default
+    var onLoginSuccess: (() -> Void)?
     
     override func loadView() {
         view = loginView
@@ -38,6 +39,12 @@ class LoginViewController: UIViewController {
     @objc func registerButtonTapped() {
         let registerVC = RegisterViewController()
         registerVC.modalPresentationStyle = .fullScreen
+        registerVC.onRegistrationSuccess = { [weak self] in
+            self?.dismiss(animated: true) {
+            // Notify that registration was successful and go to main screen
+            self?.onLoginSuccess?()
+            }
+        }
         present(registerVC, animated: true)
     }
     
@@ -67,6 +74,7 @@ class LoginViewController: UIViewController {
                 print("login successful")
                 self.setLoading(false)
                 self.notificationCenter.post(name: .loggedIn, object: nil)
+                self.onLoginSuccess?()
                 self.dismiss(animated: true)
             }else{
                 self.setLoading(false)
