@@ -69,6 +69,7 @@ class ChatViewController: UIViewController {
                         [
                             "sender_id": loggedInUser.email,
                             "chatWith": contact.name,
+                            "chatWithEmail": contact.email,
                             "lastMessage": text,
                             "timestamp": timeStamp,
                         ], merge: true)
@@ -80,6 +81,7 @@ class ChatViewController: UIViewController {
                         [
                             "sender_id": loggedInUser.email,
                             "chatWith": loggedInUser.name,
+                            "chatWithEmail": loggedInUser.email,
                             "lastMessage": text,
                             "timestamp": timeStamp,
                         ], merge: true)
