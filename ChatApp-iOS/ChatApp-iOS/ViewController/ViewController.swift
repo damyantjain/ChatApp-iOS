@@ -57,7 +57,7 @@ class ViewController: UIViewController {
         navigationItem.leftBarButtonItem?.menu = menu
         landView.allChatsTableView.delegate = self
         landView.allChatsTableView.dataSource = self
-        landView.allChatsTableView.separatorStyle = .none
+        landView.allChatsTableView.separatorStyle = .singleLine
     }
 
     func getAllChats() async {
@@ -154,7 +154,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 withIdentifier: "allChats", for: indexPath)
             as! AllChatsTableView
         cell.selectionStyle = .none
-        tableView.separatorStyle = .none
         cell.senderNameLabel.text = chats[indexPath.row].chatWith
         cell.messageTextLabel.text = chats[indexPath.row].lastMessage
         let dateFormatter = DateFormatter()
