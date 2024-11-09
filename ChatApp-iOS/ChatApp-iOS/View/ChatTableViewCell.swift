@@ -75,14 +75,12 @@ class ChatTableViewCell: UITableViewCell {
 
     func configureProperties(isCurrentUser: Bool) {
         if isCurrentUser {
-            // Sent messages (Current user)
             wrapperCellView.backgroundColor = UIColor.systemBlue
                 .withAlphaComponent(0.8)
             messageTextLabel.textColor = UIColor.white
             nameLabel.textColor = UIColor.white.withAlphaComponent(0.8)
             dateTimeLabel.textColor = UIColor.white.withAlphaComponent(0.9)
         } else {
-            // Received messages (Other user)
             wrapperCellView.backgroundColor = UIColor.systemGray5
             messageTextLabel.textColor = UIColor.black
             nameLabel.textColor = UIColor.red.withAlphaComponent(0.8)
