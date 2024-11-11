@@ -12,6 +12,9 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let searchSheetController = SearchBottomSheetController()
+    var searchSheetNavController: UINavigationController!
+    
     let db = Firestore.firestore()
     var landView = LandingView()
     var loggedInUser = User(email: "", name: "")
@@ -59,6 +62,10 @@ class ViewController: UIViewController {
         landView.allChatsTableView.dataSource = self
         landView.allChatsTableView.separatorStyle = .singleLine
     }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 
     func getAllChats() async {
         do {
@@ -88,8 +95,28 @@ class ViewController: UIViewController {
         }
     }
     @objc func onAddBarButtonTapped() {
-
+        setupSearchBottomSheet()
+        searchSheetController.loggedInUser = loggedInUser
+        // changed here
+        searchSheetController.navigationController1 = self.navigationController
+        present(searchSheetNavController, animated: true)
     }
+    
+    
+    func setupSearchBottomSheet(){
+
+  
+        searchSheetNavController = UINavigationController(rootViewController: searchSheetController)
+        
+       
+        searchSheetNavController.modalPresentationStyle = .pageSheet
+        
+        if let bottomSearchSheet = searchSheetNavController.sheetPresentationController{
+            bottomSearchSheet.detents = [.medium(), .large()]
+            bottomSearchSheet.prefersGrabberVisible = true
+        }
+    }
+    
     func logout() {
         let logoutAlert = UIAlertController(
             title: "Logging out!", message: "Are you sure want to log out?",
