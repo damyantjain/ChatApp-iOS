@@ -14,6 +14,7 @@ class ViewController: UIViewController {
 
     let searchSheetController = SearchBottomSheetController()
     var searchSheetNavController: UINavigationController!
+    var chatListener: ListenerRegistration?
     
     let db = Firestore.firestore()
     var landView = LandingView()
@@ -67,38 +68,49 @@ class ViewController: UIViewController {
         super.init(coder: coder)
     }
 
-    func getAllChats() async {
-        do {
-            chats.removeAll()
-            print("current logged in user:", loggedInUser.email)
-            let snapshot = try await db.collection("users").document(
-                loggedInUser.email
-            ).collection("chats").getDocuments()
-            for document in snapshot.documents {
-                let data = document.data()
-                if let lastMessage = data["lastMessage"] as? String,
-                    let chatWith = data["chatWith"] as? String,
-                    let timestamp = data["timestamp"] as? Timestamp,
-                    let chatWithEmail = data["chatWithEmail"] as? String
-                {
-                    let chat = ChatDetails(
-                        lastMessage: lastMessage, chatWith: chatWith,
-                        timestamp: timestamp.dateValue(),
-                        chatWithEmail: chatWithEmail)
-                    chats.append(chat)
-                    chats.sort { $0.timestamp > $1.timestamp }
-                    self.landView.allChatsTableView.reloadData()
-                }
-            }
 
-        } catch {
-            print("Error getting documents: \(error)")
-        }
+
+    func getAllChats() {
+        chatListener?.remove()
+
+        chatListener = db.collection("users").document(loggedInUser.email)
+            .collection("chats")
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("Error fetching real-time chat updates: \(error)")
+                    return
+                }
+                
+                self.chats.removeAll()
+                
+                for document in snapshot?.documents ?? [] {
+                    let data = document.data()
+                    
+                    if let lastMessage = data["lastMessage"] as? String,
+                        let chatWith = data["chatWith"] as? String,
+                        let timestamp = data["timestamp"] as? Timestamp,
+                        let chatWithEmail = data["chatWithEmail"] as? String {
+                        
+                        let chat = ChatDetails(
+                            lastMessage: lastMessage, chatWith: chatWith,
+                            timestamp: timestamp.dateValue(),
+                            chatWithEmail: chatWithEmail
+                        )
+                        
+                        self.chats.append(chat)
+                    }
+                }
+
+                self.chats.sort { $0.timestamp > $1.timestamp }
+                self.landView.allChatsTableView.reloadData()
+            }
     }
+
     @objc func onAddBarButtonTapped() {
         setupSearchBottomSheet()
         searchSheetController.loggedInUser = loggedInUser
-        // changed here
         searchSheetController.navigationController1 = self.navigationController
         present(searchSheetNavController, animated: true)
     }
