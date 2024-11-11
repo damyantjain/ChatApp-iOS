@@ -1,8 +1,6 @@
 //
 //  SearchBottomSheetView.swift
-//  BottomSheetViewDemo
-//
-//  Created by Sakib Miazi on 6/13/23.
+//  Created by Gautam Raju on 11/10/24.
 //
 
 import UIKit
