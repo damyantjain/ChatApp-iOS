@@ -17,6 +17,7 @@ class SearchBottomSheetController: UIViewController {
     var dataUsers = [Contact]()
     var loggedInUser: User?
     
+    
     var navigationController1: UINavigationController?
     
     let searchSheet = SearchBottomSheetView()
@@ -88,14 +89,15 @@ class SearchBottomSheetController: UIViewController {
 //MARK: adopting Table View protocols...
 extension SearchBottomSheetController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return namesForTableView.count
+        return dataUsers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Configs.searchTableViewID, for: indexPath) as! SearchTableCell
-        
-        cell.labelTitle.text = namesForTableView[indexPath.row]
+        if(dataUsers[indexPath.row].name != self.loggedInUser?.name){
+            cell.labelTitle.text = dataUsers[indexPath.row].name
+        }
         return cell
     }
     
