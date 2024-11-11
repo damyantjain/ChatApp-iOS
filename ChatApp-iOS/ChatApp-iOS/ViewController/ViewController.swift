@@ -69,6 +69,7 @@ class ViewController: UIViewController {
 
     func getAllChats() async {
         do {
+            chats.removeAll()
             print("current logged in user:", loggedInUser.email)
             let snapshot = try await db.collection("users").document(
                 loggedInUser.email
@@ -143,7 +144,6 @@ class ViewController: UIViewController {
 
         loginVC.onLoginSuccess = { [weak self] in
             self?.dismiss(animated: true) {
-                self?.loadChatsForLoggedInUser()
             }
         }
 
