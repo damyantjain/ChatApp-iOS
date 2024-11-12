@@ -8,7 +8,6 @@
 import UIKit
 
 class ChatTableViewCell: UITableViewCell {
-
     var wrapperCellView: UIView!
     var nameLabel: UILabel!
     var messageTextLabel: UILabel!
@@ -20,7 +19,6 @@ class ChatTableViewCell: UITableViewCell {
         setUpNameLabel()
         setUpTextLabel()
         setUpDateTimeLabel()
-        initConstraints()
     }
 
     func setupWrapperCellView() {
@@ -30,9 +28,8 @@ class ChatTableViewCell: UITableViewCell {
         wrapperCellView.layer.shadowOpacity = 0.1
         wrapperCellView.layer.shadowOffset = CGSize(width: 1, height: 1)
         wrapperCellView.layer.shadowRadius = 4
-
         wrapperCellView.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(wrapperCellView)
+        self.contentView.addSubview(wrapperCellView)
     }
 
     func setUpNameLabel() {
@@ -58,51 +55,32 @@ class ChatTableViewCell: UITableViewCell {
     }
 
     func configureConstraints(isCurrentUser: Bool) {
-        if isCurrentUser {
-            NSLayoutConstraint.activate([
-                wrapperCellView.trailingAnchor.constraint(
-                    equalTo: self.safeAreaLayoutGuide.trailingAnchor,
-                    constant: -10)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                wrapperCellView.leadingAnchor.constraint(
-                    equalTo: self.safeAreaLayoutGuide.leadingAnchor,
-                    constant: 10)
-            ])
-        }
-    }
+        wrapperCellView.removeFromSuperview()
+        contentView.addSubview(wrapperCellView)
 
-    func configureProperties(isCurrentUser: Bool) {
-        if isCurrentUser {
-            wrapperCellView.backgroundColor = UIColor.systemBlue
-                .withAlphaComponent(0.8)
-            messageTextLabel.textColor = UIColor.white
-            nameLabel.textColor = UIColor.white.withAlphaComponent(0.8)
-            dateTimeLabel.textColor = UIColor.white.withAlphaComponent(0.9)
-        } else {
-            wrapperCellView.backgroundColor = UIColor.systemGray5
-            messageTextLabel.textColor = UIColor.black
-            nameLabel.textColor = UIColor.red.withAlphaComponent(0.8)
-        }
-        configureConstraints(isCurrentUser: isCurrentUser)
-    }
-
-    func initConstraints() {
-        NSLayoutConstraint.activate([
+        let baseConstraints = [
             wrapperCellView.topAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 5),
+                equalTo: contentView.topAnchor, constant: 5),
             wrapperCellView.bottomAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.bottomAnchor, constant: -5
-            ),
+                equalTo: contentView.bottomAnchor, constant: -5),
             wrapperCellView.widthAnchor.constraint(
-                greaterThanOrEqualToConstant: 90
-            ),
+                greaterThanOrEqualToConstant: 90),
             wrapperCellView.widthAnchor.constraint(
-                lessThanOrEqualTo: self.safeAreaLayoutGuide.widthAnchor,
-                multiplier: 0.8
-            ),
+                lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.75),
+        ]
 
+        let positionConstraint: NSLayoutConstraint
+        if isCurrentUser {
+            positionConstraint = wrapperCellView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor, constant: -10)
+        } else {
+            positionConstraint = wrapperCellView.leadingAnchor.constraint(
+                equalTo: contentView.leadingAnchor, constant: 10)
+        }
+
+        NSLayoutConstraint.activate(baseConstraints + [positionConstraint])
+
+        NSLayoutConstraint.activate([
             nameLabel.topAnchor.constraint(
                 equalTo: wrapperCellView.topAnchor, constant: 6),
             nameLabel.leadingAnchor.constraint(
@@ -126,18 +104,30 @@ class ChatTableViewCell: UITableViewCell {
         ])
     }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func configureProperties(isCurrentUser: Bool) {
+        if isCurrentUser {
+            wrapperCellView.backgroundColor = UIColor.systemBlue
+                .withAlphaComponent(0.8)
+            messageTextLabel.textColor = UIColor.white
+            nameLabel.textColor = UIColor.white.withAlphaComponent(0.8)
+            dateTimeLabel.textColor = UIColor.white.withAlphaComponent(0.9)
+        } else {
+            wrapperCellView.backgroundColor = UIColor.systemGray5
+            messageTextLabel.textColor = UIColor.black
+            nameLabel.textColor = UIColor.red.withAlphaComponent(0.8)
+            dateTimeLabel.textColor = UIColor.black.withAlphaComponent(0.7)
+        }
+        configureConstraints(isCurrentUser: isCurrentUser)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        messageTextLabel.text = nil
+        nameLabel.text = nil
+        dateTimeLabel.text = nil
     }
 }
