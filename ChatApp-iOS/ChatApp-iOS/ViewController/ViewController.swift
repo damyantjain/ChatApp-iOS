@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     let searchSheetController = SearchBottomSheetController()
     var searchSheetNavController: UINavigationController!
     var chatListener: ListenerRegistration?
-    
+
     let db = Firestore.firestore()
     var landView = LandingView()
     var loggedInUser = User(email: "", name: "")
@@ -31,12 +31,18 @@ class ViewController: UIViewController {
         title = "My Chats"
 
         _ = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-            if user != nil {
-                self?.loadChatsForLoggedInUser()
-            } else {
-                self?.showLoginScreen()
+            Task {
+                if user != nil {
+                    await self?.loadChatsForLoggedInUser()
+                } else {
+                    self?.showLoginScreen()
+                }
             }
         }
+
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(handlePostRegistration),
+            name: .registered, object: nil)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .add, target: self,
@@ -63,12 +69,16 @@ class ViewController: UIViewController {
         landView.allChatsTableView.dataSource = self
         landView.allChatsTableView.separatorStyle = .singleLine
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
-
+    @objc func handlePostRegistration() {
+        Task {
+            await loadChatsForLoggedInUser()
+        }
+    }
 
     func getAllChats() {
         chatListener?.remove()
@@ -77,28 +87,29 @@ class ViewController: UIViewController {
             .collection("chats")
             .addSnapshotListener { [weak self] snapshot, error in
                 guard let self = self else { return }
-                
+
                 if let error = error {
                     print("Error fetching real-time chat updates: \(error)")
                     return
                 }
-                
+
                 self.chats.removeAll()
-                
+
                 for document in snapshot?.documents ?? [] {
                     let data = document.data()
-                    
+
                     if let lastMessage = data["lastMessage"] as? String,
                         let chatWith = data["chatWith"] as? String,
                         let timestamp = data["timestamp"] as? Timestamp,
-                        let chatWithEmail = data["chatWithEmail"] as? String {
-                        
+                        let chatWithEmail = data["chatWithEmail"] as? String
+                    {
+
                         let chat = ChatDetails(
                             lastMessage: lastMessage, chatWith: chatWith,
                             timestamp: timestamp.dateValue(),
                             chatWithEmail: chatWithEmail
                         )
-                        
+
                         self.chats.append(chat)
                     }
                 }
@@ -114,22 +125,22 @@ class ViewController: UIViewController {
         searchSheetController.navigationController1 = self.navigationController
         present(searchSheetNavController, animated: true)
     }
-    
-    
-    func setupSearchBottomSheet(){
 
-  
-        searchSheetNavController = UINavigationController(rootViewController: searchSheetController)
-        
-       
+    func setupSearchBottomSheet() {
+
+        searchSheetNavController = UINavigationController(
+            rootViewController: searchSheetController)
+
         searchSheetNavController.modalPresentationStyle = .pageSheet
-        
-        if let bottomSearchSheet = searchSheetNavController.sheetPresentationController{
+
+        if let bottomSearchSheet = searchSheetNavController
+            .sheetPresentationController
+        {
             bottomSearchSheet.detents = [.medium(), .large()]
             bottomSearchSheet.prefersGrabberVisible = true
         }
     }
-    
+
     func logout() {
         let logoutAlert = UIAlertController(
             title: "Logging out!", message: "Are you sure want to log out?",
@@ -162,18 +173,22 @@ class ViewController: UIViewController {
         present(loginVC, animated: true)
     }
 
-    func loadChatsForLoggedInUser() {
-        if let user = Auth.auth().currentUser, let email = user.email,
-            !email.isEmpty
-        {
-            loggedInUser = User(
-                email: email, name: user.displayName ?? "Unknown")
-            Task {
-                await getAllChats()
+    func loadChatsForLoggedInUser() async {
+        do {
+            try await Auth.auth().currentUser?.reload()
+            if let user = Auth.auth().currentUser, let email = user.email,
+                !email.isEmpty, let displayName = user.displayName,
+                !displayName.isEmpty
+            {
+                loggedInUser = User(
+                    email: email, name: displayName)
+                getAllChats()
+            } else {
+                print("Error: Logged in user email is empty.")
+                showLoginScreen()
             }
-        } else {
-            print("Error: Logged in user email is empty.")
-            showLoginScreen()
+        } catch {
+
         }
     }
 }
