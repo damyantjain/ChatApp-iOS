@@ -58,7 +58,7 @@ class SearchBottomSheetController: UIViewController {
                     if let email = document.data()["email"] as? String,
                        let name = document.data()["name"] as? String {
                         let contact = Contact(name: name, email: email)
-                        self.dataUsers.append(contact)
+//                        self.dataUsers.append(contact)
                         
                         if email != self.loggedInUser?.email {
                             self.filteredDataUsers.append(contact)
