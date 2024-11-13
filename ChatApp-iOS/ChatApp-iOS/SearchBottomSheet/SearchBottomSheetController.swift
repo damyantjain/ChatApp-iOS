@@ -12,8 +12,8 @@ class SearchBottomSheetController: UIViewController {
     
     var authStateListenerHandle: AuthStateDidChangeListenerHandle?
     let db = Firestore.firestore()
-    var dataUsers = [Contact]()
-    var filteredDataUsers = [Contact]()
+    var dataUsers = [User]()
+    var filteredDataUsers = [User]()
     var loggedInUser: User?
     
     var navigationController1: UINavigationController?
@@ -30,7 +30,6 @@ class SearchBottomSheetController: UIViewController {
         
         searchSheet.tableViewSearchResults.delegate = self
         searchSheet.tableViewSearchResults.dataSource = self
-        searchSheet.searchBar.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,6 +46,13 @@ class SearchBottomSheetController: UIViewController {
     }
     
     func fetchUsers() {
+        
+        guard let loggedInUserEmail = loggedInUser?.email else {
+              print("Logged-in user not set. Aborting fetch.")
+              return
+          }
+          
+        
         db.collection("users").getDocuments { (querySnapshot, error) in
             if let error = error {
                 print("Error fetching documents: \(error)")
@@ -57,19 +63,17 @@ class SearchBottomSheetController: UIViewController {
                 for document in documents {
                     if let email = document.data()["email"] as? String,
                        let name = document.data()["name"] as? String {
-                        let contact = Contact(name: name, email: email)
-//                        self.dataUsers.append(contact)
-                        
-                        if email != self.loggedInUser?.email {
-                            self.filteredDataUsers.append(contact)
-                        }
+                        let user = User(email: email, name: name)
+                        self.dataUsers.append(user) 
                     }
                 }
                 
+                self.filteredDataUsers = self.dataUsers.filter { $0.name != self.loggedInUser?.name }
                 self.searchSheet.tableViewSearchResults.reloadData()
             }
         }
     }
+
 }
 
 
@@ -101,17 +105,5 @@ extension SearchBottomSheetController: UITableViewDelegate, UITableViewDataSourc
 }
 
 
-extension SearchBottomSheetController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            filteredDataUsers = dataUsers.filter { $0.email != loggedInUser?.email }
-        } else {
-            filteredDataUsers = dataUsers.filter {
-                $0.email != loggedInUser?.email && $0.name.contains(searchText)
-            }
-        }
-        searchSheet.tableViewSearchResults.reloadData()
-    }
-}
 
 
