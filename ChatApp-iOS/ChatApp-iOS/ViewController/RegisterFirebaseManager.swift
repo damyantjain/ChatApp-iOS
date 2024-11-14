@@ -27,12 +27,14 @@ extension RegisterViewController {
                         do {
                             try await Auth.auth().createUser(
                                 withEmail: email, password: password)
-                            self.setLoading(false)
                             await setNameOfTheUserInFirebaseAuth(name: name)
                             await saveUserToFirestore(name: name, email: email)
+                            let landingVC = LandingViewController()
+                            navigationController?.setViewControllers(
+                                [landingVC], animated: true)
+                            self.setLoading(false)
                             self.notificationCenter.post(
                                 name: .registered, object: nil)
-                            self.onRegistrationSuccess?()
                             print("registered successfully")
                         } catch {
                             self.setLoading(false)
@@ -76,7 +78,6 @@ extension RegisterViewController {
             do {
                 try await changeRequest.commitChanges()
                 print("Profile update successful")
-                self.dismiss(animated: true)
             } catch {
                 print("Error occurred: \(error)")
             }
