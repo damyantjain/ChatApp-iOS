@@ -26,8 +26,13 @@ extension RegisterViewController {
                         do {
                             try await Auth.auth().createUser(
                                 withEmail: email, password: password)
-                            await setNameOfTheUserInFirebaseAuth(name: name)
-                            await saveUserToFirestore(name: name, email: email)
+                            async let setName: Void =
+                                setNameOfTheUserInFirebaseAuth(name: name)
+                            async let storeUserToFireStore: Void =
+                                saveUserToFirestore(name: name, email: email)
+                            _ = await (
+                                setName, storeUserToFireStore
+                            )
                             let landingVC = LandingViewController()
                             navigationController?.setViewControllers(
                                 [landingVC], animated: true)
