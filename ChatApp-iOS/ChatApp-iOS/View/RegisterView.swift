@@ -115,7 +115,6 @@ class RegisterView: UIView {
     
     func setUpLoginButton(){
         loginButton = UIButton(type: .system)
-        loginButton.setTitle("Already have an account? Login!", for: .normal)
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         contentWrapper.addSubview(loginButton)
     }

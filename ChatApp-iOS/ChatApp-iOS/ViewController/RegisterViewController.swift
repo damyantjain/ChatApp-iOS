@@ -11,7 +11,6 @@ class RegisterViewController: UIViewController {
 
     let registerView = RegisterView()
     let notificationCenter = NotificationCenter.default
-    var onRegistrationSuccess: (() -> Void)?
     
     override func loadView() {
         view = registerView
@@ -19,8 +18,6 @@ class RegisterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        title = "Chat App"
         
         self.view.backgroundColor = .white
         
@@ -28,7 +25,6 @@ class RegisterViewController: UIViewController {
         tapRecognizer.cancelsTouchesInView = false
         view.addGestureRecognizer(tapRecognizer)
         
-        registerView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         registerView.registerButton.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
         
     }
@@ -79,10 +75,6 @@ class RegisterViewController: UIViewController {
             
             registerNewAccount()
         }
-    }
-    
-    @objc func loginButtonTapped() {
-        dismiss(animated: true)
     }
     
     func isValidEmail(_ email: String) -> Bool {
