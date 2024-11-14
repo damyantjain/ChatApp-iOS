@@ -17,7 +17,6 @@ extension RegisterViewController {
                 let email = registerView.emailText.text,
                 let password = registerView.passwordText.text
             {
-
                 do {
                     let exists = try await checkIfEmailExistsInFirestore(
                         email: email)
