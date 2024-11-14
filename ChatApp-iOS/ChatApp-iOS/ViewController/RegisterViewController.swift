@@ -59,10 +59,17 @@ class RegisterViewController: UIViewController {
                 return
             }
             
+            if passwordText.count < 6 {
+                showAlert(title: "Incorrect Password Length", message: "Password should be of atleast length 6.")
+                return
+                
+            }
+            
             if passwordText != confirmedPassword {
                 showAlert(title: "Passwords do not match!", message: "Please enter the correct password.")
                 return
             }
+           
             
             setLoading(true)
             
