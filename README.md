@@ -16,12 +16,6 @@ ChatApp-iOS is a lightweight chat application built with Swift and Firebase, ena
 git clone https://github.com/yourusername/SwiftChat.git`
 ```
 
-2. Install dependencies:
+2. Open `ChatApp-iOS.xcworkspace` in Xcode
 
-```
-pod install
-```
-
-3. Open `ChatApp-iOS.xcworkspace` in Xcode
-
-4. Build and run the project
+3. Build and run the project
